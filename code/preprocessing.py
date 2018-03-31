@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Mar 25 16:55:28 2018
-
-@author: Sun T.x.
-"""
 
 import jieba
 import os
