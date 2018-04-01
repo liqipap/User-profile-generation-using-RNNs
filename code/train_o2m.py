@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 from torch import optim
 import torch.nn.functional as F
+from torch.nn.parameter import Parameter
 
 import os
 import time
@@ -66,7 +67,7 @@ def train(target_variable, model, model_optimizer, criterion, max_length=MAX_LEN
             ni = topi[0][0]
 
             input = Variable(torch.LongTensor([[ni]]))
-            input = decoder_input.cuda() if use_cuda else decoder_input
+            input = input.cuda() if use_cuda else input
 
             loss += criterion(output, target_variable[di])
             if ni == EOS_token:
@@ -100,7 +101,7 @@ def trainIters(model, n_iters, print_every=1000, plot_every=100, learning_rate=0
 
     model_optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     
-    training_targets = [variableFromSentence(vocab, random.choice(texts))
+    training_targets = [variableFromSentence(vocab, random.choice(inputs))
                       for i in range(n_iters)]
     criterion = nn.NLLLoss()
 
@@ -146,24 +147,16 @@ def save_o2m_model():
 def save_o2m_paras():
     # To-do
     print("Parameters saving...\n")
-    modelKeys = model.state_dict().keys()
-    modelParameters = []
-    for key in modelKeys:
-        if key=='???':
-            continue
-        modelParameters.append(model.state_dict()[key].cpu().numpy())
+    paras = model.state_dict()['userVector'].cpu().numpy().reshape(-1)
         
     resultPath = res_path + objectUser + '/'
     if os.path.exists(resultPath) == False:
         os.mkdir(resultPath)
         
-    f = open(resultPath + 'profile2vecParameters.txt','w')
-    mainVector = []
-    for i in range(len(modelParameters)):
-        for j in range(len(modelParameters[i])):
-            if modelParameters[i][j].size == 1:
-                f.writelines(str(EncoderVector))
-    f.close()
+    np.save(resultPath + 'profile2vecParameters', paras)
+#    f = open(resultPath + 'profile2vecParameters.txt','w')
+#    f.writelines(str(paras))
+#    f.close()
 
     print("Parameters saved!\n")
 
@@ -176,4 +169,4 @@ if use_cuda:
 trainIters(model, 80000, print_every=5000)
 
 save_o2m_model()
-#save_o2m_paras()
+save_o2m_paras()
