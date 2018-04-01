@@ -101,7 +101,7 @@ def trainIters(model, n_iters, print_every=1000, plot_every=100, learning_rate=0
 
     model_optimizer = optim.SGD(model.parameters(), lr=learning_rate)
     
-    training_targets = [variableFromSentence(vocab, random.choice(inputs))
+    training_targets = [variableFromSentence(vocab, random.choice(texts))
                       for i in range(n_iters)]
     criterion = nn.NLLLoss()
 
