@@ -16,19 +16,6 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 
-use_cuda = torch.cuda.is_available()
-
-vocab_size = vocab.n_words
-embedding_dim = 50
-hidden_size = 256
-MAX_LENGTH = 15
-teacher_forcing_ratio = 0.5
-
-save_path = 'models/'
-res_path = 'results/'
-
-os.chdir("G:/XDU/1Pri/Proj")
-
 def indexesFromSentence(lang, sentence):
     return [lang.word2index[word] for word in sentence.split(' ')]
 
@@ -159,14 +146,3 @@ def save_o2m_paras():
 #    f.close()
 
     print("Parameters saved!\n")
-
-# Start training!
-model = o2mRNN(hidden_size, vocab_size, embedding_dim, wordEmbeddings, dropout_p=0.1)
-
-if use_cuda:
-    model = model.cuda()
-
-trainIters(model, 80000, print_every=5000)
-
-save_o2m_model()
-save_o2m_paras()
