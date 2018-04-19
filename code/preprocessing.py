@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar 25 16:55:28 2018
+
+@author: Sun T.x.
+"""
 
 import jieba
 import os
@@ -8,21 +14,6 @@ import pickle
 import unicodedata
 import numpy as np
 from io import open
-
-
-SOS_token = 0
-EOS_token = 1
-
-MAX_LENGTH = 15
-embedding_dim = 50
-
-# 设置当前工作路径
-os.chdir("G:/XDU/1Pri/Proj")
-
-raw_path = "data/raw/"
-seg_path = "data/seg/"
-
-objectUser = 'Luhan_Star'
 
 class Lang:
     def __init__(self, name):
@@ -58,14 +49,14 @@ def normalizeString(s):
     return s.strip()
 
 def segText(rawPath, segPath):
+    print('Start word segmentation..')
     dir_list = os.listdir(rawPath)
-    
     for _dir in dir_list:
         dir_path = rawPath + _dir + "/"
         file_list = os.listdir(dir_path)
         for file_name in file_list:
             file_path = dir_path + file_name
-            raw_file = open(file_path, 'r')
+            raw_file = open(file_path, 'r', errors='ignore')
             raw_text = raw_file.read()
             
             seg_text = jieba.cut(raw_text)
@@ -99,7 +90,7 @@ def readLang(path, lang):
     return vocab
 
 def filterSentence(sent):
-    return len(sent.split(' ')) > MAX_LENGTH or len(sent.split(' ')) < 3
+    return len(sent.split(' ')) > MAX_LENGTH or len(sent.split(' ')) < 2
 
 def getPairs(obj):
     path = seg_path + obj + '/'
@@ -118,6 +109,20 @@ def getPairs(obj):
     
     print("Get %s pairs.\n" % len(inputs))
     return inputs, targets
+
+def getTexts(obj):
+    path = seg_path + obj + '/'
+    textFile = open(path + 'main.txt', 'r')
+    textLines = textFile.read().strip().split('\n')
+    
+    texts = [normalizeString(l) for l in textLines]
+    
+    for i in range(len(texts)-1, -1, -1):
+        if filterSentence(texts[i]):
+            del texts[i]
+            
+    print("Get %s texts.\n" % len(texts))
+    return texts
 
 def load_my_vecs(path, vocab):
     # path为预训练的word2vec文件路径
@@ -152,15 +157,3 @@ def load_my_vecs(path, vocab):
     print("IOV count: %d\n" % count)
     print("OOV count: %d\n" % (vocab_size - count))
     return word_vecs, indicator, words
-
-# Start
-print("Data preparing...\n")
-segText(raw_path, seg_path)
-vocab = readLang(seg_path, 'Chinese')
-
-vocab_size = vocab.n_words
-
-wordEmbeddings, indicator, all_words = load_my_vecs('data/zhwiki/zhwiki/zhwiki_2017_03.sg_50d.word2vec',
-                                                    vocab)
-
-inputs, targets = getPairs(objectUser)
