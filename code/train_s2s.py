@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 26 11:30:39 2018
+
+@author: Sun T.x.
+"""
 
 import torch
 import torch.nn as nn
@@ -14,19 +20,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-
-use_cuda = torch.cuda.is_available()
-
-vocab_size = vocab.n_words
-embedding_dim = 50
-hidden_size = 256
-MAX_LENGTH = 15
-teacher_forcing_ratio = 0.5
-
-save_path = 'models/'
-res_path = 'results/'
-
-os.chdir("G:/XDU/1Pri/Proj")
 
 def indexesFromSentence(lang, sentence):
     return [lang.word2index[word] for word in sentence.split(' ')]
@@ -210,15 +203,3 @@ def save_s2s_paras():
     f.close()
     print("Parameters saved!\n")
 
-# Start training!
-encoder = EncoderRNN(vocab_size, embedding_dim, hidden_size, wordEmbeddings)
-decoder = DecoderRNN(hidden_size, vocab_size, embedding_dim, wordEmbeddings, dropout_p=0.1)
-
-if use_cuda:
-    encoder = encoder.cuda()
-    decoder = decoder.cuda()
-
-trainIters(encoder, decoder, 75000, print_every=5000)
-
-save_s2s_model()
-save_s2s_paras()
