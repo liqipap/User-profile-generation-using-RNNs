@@ -1,10 +1,9 @@
 # User-profile-generation-using-RNNs
 ## Main Idea
-Inspired by the conceptions from *NMT* and *word2vec*, a method which combines the results from seq2seq model and one-to-many model is proposed to automatically generate user profiles.  
+We mainly focus on deep learning methods of user profile generation based on users’ text data, as well as identification of implicit
+organizations (e.g., robots, water army, etc.) based on user profiles.
+Currently we are introducing methods in *Knowledge Representation Learning (KRL)* into *Social Media Computing (SMP)*.
 
-**P.S.** Data is collected from Sina weibo.  
+**P.S.** We collected text data of ~10GB from Sina Weibo.  
 ***
-Uh.. Here is an incomplete and more simple implementation...  
-
-More details about the real loss function, nn structures and optimizers will (maybe) be available when results of *kernel k-means* analysis are good enough ;(  
 
